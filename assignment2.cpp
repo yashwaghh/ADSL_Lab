@@ -31,22 +31,22 @@ public:
 
         cout << "Enter number of chapters: ";
         cin >> root->childCount;
+        cin.ignore();
 
         for (int i = 0; i < root->childCount; i++) {
             root->child[i] = new Node;
 
             cout << "\nEnter Chapter " << i + 1 << " name: ";
-            cin.ignore();
             cin.getline(root->child[i]->label, 50);
 
             cout << "Enter number of sections in this chapter: ";
             cin >> root->child[i]->childCount;
+            cin.ignore();
 
             for (int j = 0; j < root->child[i]->childCount; j++) {
                 root->child[i]->child[j] = new Node;
 
                 cout << "Enter Section " << j + 1 << " name: ";
-                cin.ignore();
                 cin.getline(root->child[i]->child[j]->label, 50);
 
                 root->child[i]->child[j]->childCount = 0; // no subsections

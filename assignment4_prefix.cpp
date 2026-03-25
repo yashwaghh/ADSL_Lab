@@ -1,0 +1,121 @@
+#include <iostream> 
+#include <string.h> 
+#include <stdlib.h> 
+using namespace std; 
+ 
+struct node { 
+    char data; 
+    node *left; 
+    node *right; 
+}; 
+ 
+class stack1 { 
+    node *data[30]; 
+    int top; 
+public: 
+    stack1() { 
+        top = -1; 
+    } 
+    int empty() { 
+        if (top == -1) 
+            return 1; 
+        return 0; 
+    } 
+    void push(node *p) { 
+        data[++top] = p; 
+    } 
+    node *pop() { 
+        return (data[top--]); 
+    } 
+}; 
+ 
+class tree { 
+    char prefix[20]; 
+public: 
+    node *top; 
+    void expression(char[]); 
+    void display(node *); 
+    void non_rec_postorder(node *); 
+    void del(node *); 
+}; 
+ 
+void tree::expression(char prefix[]) { 
+    stack1 s; 
+    node *t1, *t2; 
+    int len, i; 
+    len = strlen(prefix); 
+    for (i = len - 1; i >= 0; i--) { 
+        top = new node; 
+        top->left = NULL; 
+        top->right = NULL; 
+        if (isalnum(prefix[i])) { 
+            top->data = prefix[i]; 
+            s.push(top); 
+        } else if (prefix[i] == '+' || prefix[i] == '*' || prefix[i] == '-' || prefix[i] == '/' || prefix[i]== '^') { 
+            t1 = s.pop();  
+            t2 = s.pop();  
+            top->data = prefix[i]; 
+            top->left = t1; 
+            top->right = t2; 
+            s.push(top); 
+        } 
+    } 
+    top = s.pop(); 
+} 
+ 
+void tree::display(node *root) { 
+    if (root != NULL) { 
+        cout << root->data; 
+        display(root->left); 
+        display(root->right); 
+    } 
+} 
+ 
+void tree::non_rec_postorder(node *top) { 
+    stack1 s1, s2; 
+    node *temp = top; 
+    s1.push(temp); 
+     
+    while (!s1.empty()) { 
+        temp = s1.pop(); 
+        s2.push(temp); 
+        if (temp->left) 
+            s1.push(temp->left); 
+        if (temp->right) 
+            s1.push(temp->right); 
+    } 
+     
+    while (!s2.empty()) { 
+        temp = s2.pop(); 
+        cout << temp->data; 
+    } 
+} 
+ 
+void tree::del(node *node) { 
+    if (node == NULL) 
+        return; 
+    del(node->left); 
+    del(node->right);    
+    cout << "\nDeleting node : " << node->data; 
+    free(node); 
+} 
+ 
+int main() { 
+    char expr[20]; 
+    tree t; 
+     
+    cout << "Enter prefix Expression : "; 
+    cin >> expr; 
+     
+    t.expression(expr); 
+     
+    cout << "\nExpression (Preorder) : "; 
+    t.display(t.top); 
+     
+    cout << "\nPostorder traversal   : "; 
+    t.non_rec_postorder(t.top); 
+    cout << "\n\nDeleting Tree..."; 
+    t.del(t.top); 
+     
+    return 0; 
+}
